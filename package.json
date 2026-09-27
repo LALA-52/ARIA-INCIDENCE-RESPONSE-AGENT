@@ -1,0 +1,23 @@
+{
+  "name": "incident-response-agent",
+  "version": "1.0.0",
+  "description": "Production-style Incident Response Agent",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test-final-validation.js",
+    "test:health": "node test-health.js",
+    "test:validation": "node test-final-validation.js",
+    "test:context": "node test-context-assembly.js",
+    "test:memory": "node test-memory-evaluation.js",
+    "test:hindsight": "node test-hindsight-ops.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.0",
+    "@vectorize-io/hindsight-client": "^0.10.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident Response Agent</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="logo">Incident Response Agent</div>
+        <div class="header-controls">
+            <button id="btn-reset">Reset Environment</button>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <!-- LEFT PANEL: Conversation & Input -->
+        <aside class="panel conversation-panel">
+            <div class="panel-header">
+                <h2>Conversation History</h2>
+                <div class="test-controls">
+                    <select id="scenario-selector">
+                        <option value="">Load Test Scenario...</option>
+                        <option value="scenario1">1: Initial Incident</option>
+                        <option value="scenario2">2: Related Incident</option>
+                        <option value="scenario3">3: Unrelated Incident</option>
+                        <option value="scenario4">4: Return to Original Pattern</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="conversation-history" class="conversation-history">
+                <!-- Messages will be injected here -->
+            </div>
+
+            <div class="input-area">
+                <textarea id="incident-input" placeholder="Describe the security incident or paste alerts here..."></textarea>
+                <div class="input-actions">
+                    <button id="btn-analyze" class="primary-btn">Analyze Incident</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- RIGHT PANEL: Analysis & Memory -->
+        <main class="panel analysis-panel">
+            <div class="panel-header">
+                <h2>Incident Analysis</h2>
+                <span id="confidence-badge" class="badge neutral">Waiting</span>
+            </div>
+
+            <div class="analysis-content" id="analysis-content">
+                
+                <div class="analysis-section">
+                    <h3>Incident Summary</h3>
+                    <div id="out-summary" class="content-box text-muted">No incident loaded.</div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="analysis-section">
+                        <h3>Evidence (Observed)</h3>
+                        <div id="out-evidence" class="content-box text-muted">No evidence extracted.</div>
+                    </div>
+                    <div class="analysis-section">
+                        <h3>Historical Context</h3>
+                        <div id="out-historical" class="content-box historical-box text-muted">No historical context retrieved.</div>
+                    </div>
+                </div>
+
+                <div class="analysis-section">
+                    <h3>Assessment</h3>
+                    <div id="out-assessment" class="content-box text-muted">Awaiting analysis...</div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="analysis-section">
+                        <h3>Recommended Investigation</h3>
+                        <div id="out-investigation" class="content-box text-muted">None</div>
+                    </div>
+                    <div class="analysis-section">
+                        <h3>Recommended Response</h3>
+                        <div id="out-response" class="content-box text-muted">None</div>
+                    </div>
+                </div>
+                
+                <div class="analysis-section">
+                    <h3>Missing Information</h3>
+                    <div id="out-missing" class="content-box text-muted">None</div>
+                </div>
+            </div>
+
+            <div class="memory-activity-panel">
+                <div class="panel-header-small">
+                    <h3>Memory Activity (Hindsight)</h3>
+                    <div class="metrics">
+                        <span>Stored: <span id="metric-stored">0</span></span>
+                        <span>Recalled: <span id="metric-recalled">0</span></span>
+                    </div>
+                </div>
+                <div id="memory-log" class="memory-log">
+                    <!-- Memory logs go here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="app-footer">
+        <a href="#" onclick="alert('Privacy Policy goes here')">Privacy Policy</a>
+        <span> | </span>
+        <a href="#" onclick="alert('Terms of Service go here')">Terms of Service</a>
+    </footer>
+
+    <script src="agent.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
