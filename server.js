@@ -387,10 +387,15 @@ app.post('/api/memory/clear', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`\n=============================================================`);
-    console.log(`Incident Response Agent Server running on http://localhost:${PORT}`);
-    console.log(`Memory Bank: "${HINDSIGHT_BANK_ID}" on ${HINDSIGHT_BASE_URL}`);
-    console.log(`Health Check: http://localhost:${PORT}/api/health`);
-    console.log(`=============================================================\n`);
-});
+if (!process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`\n=============================================================`);
+        console.log(`Incident Response Agent Server running on http://localhost:${PORT}`);
+        console.log(`Memory Bank: "${HINDSIGHT_BANK_ID}" on ${HINDSIGHT_BASE_URL}`);
+        console.log(`Health Check: http://localhost:${PORT}/api/health`);
+        console.log(`=============================================================\n`);
+    });
+}
+
+export default app;
+
