@@ -165,8 +165,13 @@ function ensureString(val, fallback = '') {
 }
 
 // ----------------------------------------------------
-// API ROUTES
+// ROUTES
 // ----------------------------------------------------
+
+// Root: Serve UI
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // 1. Health & Status Check
 app.get(['/api/health', '/health'], async (req, res) => {
