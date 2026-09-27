@@ -169,7 +169,7 @@ function ensureString(val, fallback = '') {
 // ----------------------------------------------------
 
 // 1. Health & Status Check
-app.get('/api/health', async (req, res) => {
+app.get(['/api/health', '/health'], async (req, res) => {
     try {
         let geminiStatus = { connected: false, model: null };
         let hindsightStatus = { connected: false, bankId: HINDSIGHT_BANK_ID };
@@ -203,7 +203,7 @@ app.get('/api/health', async (req, res) => {
 });
 
 // 2. Incident Response Pipeline (Extraction -> Recall -> Filter -> Context Assembly -> Gemini -> Retain)
-app.post('/api/analyze', async (req, res) => {
+app.post(['/api/analyze', '/analyze'], async (req, res) => {
     try {
         const { incidentText } = req.body;
 
@@ -370,7 +370,7 @@ app.post('/api/analyze', async (req, res) => {
 });
 
 // 3. Reset / Clear Bank Memories (For testing clean slate)
-app.post('/api/memory/clear', async (req, res) => {
+app.post(['/api/memory/clear', '/memory/clear'], async (req, res) => {
     try {
         console.log(`[Hindsight] Clearing memories in bank "${HINDSIGHT_BANK_ID}"...`);
         try {
