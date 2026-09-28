@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 8000;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Environment Variables
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -170,7 +170,7 @@ function ensureString(val, fallback = '') {
 
 // Root: Serve UI
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // 1. Health & Status Check

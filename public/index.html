@@ -1,0 +1,394 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARIA — Incident Response Agent</title>
+    <meta name="description" content="ARIA: AI-powered incident response agent with persistent Hindsight memory for security operations teams.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="aria-brand">
+                <div class="aria-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L2 7v10l10 5 10-5V7L12 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        <path d="M12 22V12M2 7l10 5 10-5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="aria-wordmark">
+                    <span class="aria-name">ARIA</span>
+                    <span class="aria-subtitle">Incident Response</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="system-status-chip" id="status-chip">
+            <span class="status-dot" id="status-dot"></span>
+            <span id="status-label">Connecting...</span>
+        </div>
+
+        <div class="nav-section-label">Operations</div>
+        <ul class="nav-list">
+            <li>
+                <a href="#" class="nav-item active" data-view="overview" id="nav-overview">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>
+                    Overview
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-item" data-view="agent" id="nav-agent">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    Agent Console
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-item" data-view="incidents" id="nav-incidents">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v10l9 5 9-5V7L12 2z" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    Incidents
+                    <span class="nav-count" id="incident-count">0</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-item" data-view="memory" id="nav-memory">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="5" rx="9" ry="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 5v6c0 1.66 4.03 3 9 3s9-1.34 9-3V5" stroke="currentColor" stroke-width="1.5"/><path d="M3 11v6c0 1.66 4.03 3 9 3s9-1.34 9-3v-6" stroke="currentColor" stroke-width="1.5"/></svg>
+                    Memory Bank
+                    <span class="nav-count memory-count" id="memory-count">0</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="nav-section-label nav-section-bottom">System</div>
+        <ul class="nav-list">
+            <li>
+                <a href="#" class="nav-item" data-view="settings" id="nav-settings">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    Settings
+                </a>
+            </li>
+        </ul>
+
+        <button class="sidebar-toggle" id="sidebar-toggle" title="Collapse sidebar">
+            <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+    </nav>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <button class="topbar-menu-btn" id="sidebar-toggle-mobile">
+                <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <div class="topbar-breadcrumb">
+                <span class="topbar-section" id="topbar-section">Overview</span>
+            </div>
+            <div class="topbar-actions">
+                <div class="topbar-model-tag" id="model-tag">
+                    <span class="model-dot"></span>
+                    <span id="model-name-display">Gemini</span>
+                </div>
+                <button class="topbar-btn danger-btn" id="btn-reset">
+                    <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3 3v5h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Reset
+                </button>
+            </div>
+        </header>
+
+        <!-- VIEW: OVERVIEW -->
+        <div class="view active" id="view-overview">
+            <div class="view-body">
+                <div class="overview-hero">
+                    <div class="overview-hero-text">
+                        <h1>Incident Response Dashboard</h1>
+                        <p>ARIA monitors, recalls, investigates, and retains — powered by Hindsight persistent memory.</p>
+                    </div>
+                    <div class="workflow-strip">
+                        <div class="workflow-step"><span class="wf-num">1</span><span class="wf-label">Detect</span></div>
+                        <div class="workflow-arrow">&#8594;</div>
+                        <div class="workflow-step"><span class="wf-num">2</span><span class="wf-label">Recall</span></div>
+                        <div class="workflow-arrow">&#8594;</div>
+                        <div class="workflow-step"><span class="wf-num">3</span><span class="wf-label">Analyze</span></div>
+                        <div class="workflow-arrow">&#8594;</div>
+                        <div class="workflow-step"><span class="wf-num">4</span><span class="wf-label">Respond</span></div>
+                        <div class="workflow-arrow">&#8594;</div>
+                        <div class="workflow-step"><span class="wf-num">5</span><span class="wf-label">Retain</span></div>
+                    </div>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon kpi-icon-incidents">
+                            <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M12 2L3 7v10l9 5 9-5V7L12 2z" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                        </div>
+                        <div class="kpi-body">
+                            <div class="kpi-value" id="kpi-incidents">0</div>
+                            <div class="kpi-label">Incidents Analyzed</div>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon kpi-icon-recalled">
+                            <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M4 7h16M4 12h16M4 17h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                        </div>
+                        <div class="kpi-body">
+                            <div class="kpi-value recalled-color" id="kpi-recalled">0</div>
+                            <div class="kpi-label">Memories Recalled</div>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon kpi-icon-stored">
+                            <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><ellipse cx="12" cy="5" rx="9" ry="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5" stroke="currentColor" stroke-width="1.5"/></svg>
+                        </div>
+                        <div class="kpi-body">
+                            <div class="kpi-value stored-color" id="kpi-stored">0</div>
+                            <div class="kpi-label">Memories Retained</div>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon kpi-icon-status">
+                            <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M20 7L9 18l-5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div class="kpi-body">
+                            <div class="kpi-value" id="kpi-hindsight-status">&#8212;</div>
+                            <div class="kpi-label">Hindsight Bank</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overview-grid">
+                    <div class="panel-card">
+                        <div class="panel-card-header">
+                            <h2>Recent Analysis</h2>
+                            <button class="link-btn" onclick="switchView('agent')">Open Agent &rarr;</button>
+                        </div>
+                        <div id="overview-last-analysis" class="overview-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" width="32" height="32" style="opacity:0.2;margin-bottom:0.75rem"><path d="M12 2L3 7v10l9 5 9-5V7L12 2z" stroke="currentColor" stroke-width="1.2"/></svg>
+                            <p>No incidents analyzed yet. Open the Agent Console to begin.</p>
+                        </div>
+                    </div>
+                    <div class="panel-card">
+                        <div class="panel-card-header">
+                            <h2>Memory Activity</h2>
+                            <span class="tag-chip tag-hindsight">Hindsight</span>
+                        </div>
+                        <div id="overview-memory-feed" class="memory-feed">
+                            <div class="feed-empty">Memory activity will appear here as incidents are analyzed.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: AGENT CONSOLE -->
+        <div class="view" id="view-agent">
+            <div class="agent-layout">
+                <div class="agent-left">
+                    <div class="agent-panel-header">
+                        <h2>Conversation</h2>
+                        <select id="scenario-selector" class="scenario-select">
+                            <option value="">Load scenario...</option>
+                            <option value="scenario1">1 &middot; Initial Login Attack</option>
+                            <option value="scenario2">2 &middot; Same IP Auth Success</option>
+                            <option value="scenario3">3 &middot; Unrelated PowerShell Alert</option>
+                            <option value="scenario4">4 &middot; Return to Original Pattern</option>
+                        </select>
+                    </div>
+                    <div id="conversation-history" class="conversation-history"></div>
+                    <div class="input-area">
+                        <textarea id="incident-input" placeholder="Paste alerts, logs, or describe the incident..."></textarea>
+                        <button id="btn-analyze" class="primary-btn">
+                            <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M22 2L11 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22l-4-9-9-4 20-7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                            Analyze Incident
+                        </button>
+                    </div>
+                </div>
+
+                <div class="agent-right">
+                    <div class="agent-panel-header analysis-header">
+                        <h2>Analysis</h2>
+                        <span id="confidence-badge" class="confidence-badge neutral">Waiting</span>
+                    </div>
+                    <div id="analysis-content" class="analysis-content">
+                        <div class="analysis-empty" id="analysis-empty-state">
+                            <div class="analysis-empty-icon">
+                                <svg viewBox="0 0 24 24" fill="none" width="36" height="36"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                            </div>
+                            <h3>Ready to analyze</h3>
+                            <p>Submit an incident or load a test scenario to see ARIA's memory-driven analysis.</p>
+                        </div>
+
+                        <div id="analysis-sections" style="display:none">
+                            <div class="analysis-section">
+                                <div class="section-label"><span class="section-label-dot dot-summary"></span>Summary</div>
+                                <div id="out-summary" class="content-box"></div>
+                            </div>
+                            <div class="analysis-row">
+                                <div class="analysis-section half">
+                                    <div class="section-label"><span class="section-label-dot dot-evidence"></span>Observed Evidence</div>
+                                    <div id="out-evidence" class="content-box"></div>
+                                </div>
+                                <div class="analysis-section half">
+                                    <div class="section-label"><span class="section-label-dot dot-history"></span>Historical Context<span class="hindsight-chip">Hindsight</span></div>
+                                    <div id="out-historical" class="content-box historical-box"></div>
+                                </div>
+                            </div>
+                            <div class="analysis-section">
+                                <div class="section-label"><span class="section-label-dot dot-assessment"></span>Threat Assessment</div>
+                                <div id="out-assessment" class="content-box assessment-box"></div>
+                            </div>
+                            <div class="analysis-row">
+                                <div class="analysis-section half">
+                                    <div class="section-label"><span class="section-label-dot dot-investigate"></span>Recommended Investigation</div>
+                                    <div id="out-investigation" class="content-box"></div>
+                                </div>
+                                <div class="analysis-section half">
+                                    <div class="section-label"><span class="section-label-dot dot-response"></span>Recommended Response</div>
+                                    <div id="out-response" class="content-box"></div>
+                                </div>
+                            </div>
+                            <div class="analysis-section">
+                                <div class="section-label"><span class="section-label-dot dot-missing"></span>Missing Information</div>
+                                <div id="out-missing" class="content-box missing-box"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="memory-activity-panel">
+                        <div class="memory-activity-header">
+                            <div class="memory-activity-title">
+                                <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><ellipse cx="12" cy="5" rx="9" ry="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5" stroke="currentColor" stroke-width="1.5"/></svg>
+                                Memory Activity
+                            </div>
+                            <div class="memory-metrics">
+                                <span class="metric-chip recalled-chip">Recalled: <strong id="metric-recalled">0</strong></span>
+                                <span class="metric-chip stored-chip">Retained: <strong id="metric-stored">0</strong></span>
+                            </div>
+                        </div>
+                        <div id="memory-log" class="memory-log"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: INCIDENTS -->
+        <div class="view" id="view-incidents">
+            <div class="view-body">
+                <div class="view-header-row">
+                    <div>
+                        <h1>Incident Log</h1>
+                        <p class="view-subtitle">All incidents analyzed in this session.</p>
+                    </div>
+                </div>
+                <div id="incidents-empty" class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" width="40" height="40"><path d="M12 2L3 7v10l9 5 9-5V7L12 2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    <h3>No incidents logged</h3>
+                    <p>Incidents will appear here after you run analyses in the Agent Console.</p>
+                    <button class="primary-btn sm" onclick="switchView('agent')">Open Agent Console</button>
+                </div>
+                <table class="incident-table" id="incident-table" style="display:none">
+                    <thead>
+                        <tr>
+                            <th>#</th><th>Time</th><th>Incident Summary</th><th>Confidence</th><th>Recalled</th><th>Retained</th>
+                        </tr>
+                    </thead>
+                    <tbody id="incident-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- VIEW: MEMORY BANK -->
+        <div class="view" id="view-memory">
+            <div class="view-body">
+                <div class="view-header-row">
+                    <div>
+                        <h1>Memory Bank</h1>
+                        <p class="view-subtitle">Hindsight persistent memory — recalled and retained records from this session.</p>
+                    </div>
+                    <span class="tag-chip tag-hindsight">Hindsight</span>
+                </div>
+                <div class="memory-bank-grid">
+                    <div class="panel-card">
+                        <div class="panel-card-header">
+                            <h2><span class="section-label-dot dot-stored"></span>Retained Records</h2>
+                            <span class="metric-chip stored-chip">Count: <strong id="retained-count">0</strong></span>
+                        </div>
+                        <div id="retained-list" class="memory-record-list">
+                            <div class="feed-empty">No records retained yet.</div>
+                        </div>
+                    </div>
+                    <div class="panel-card">
+                        <div class="panel-card-header">
+                            <h2><span class="section-label-dot dot-recalled"></span>Recalled Records</h2>
+                            <span class="metric-chip recalled-chip">Count: <strong id="recalled-count">0</strong></span>
+                        </div>
+                        <div id="recalled-list" class="memory-record-list">
+                            <div class="feed-empty">No memories recalled yet.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: SETTINGS -->
+        <div class="view" id="view-settings">
+            <div class="view-body">
+                <div class="view-header-row">
+                    <div>
+                        <h1>System Settings</h1>
+                        <p class="view-subtitle">Status and configuration for ARIA's backend services.</p>
+                    </div>
+                </div>
+                <div class="settings-grid">
+                    <div class="panel-card settings-card">
+                        <div class="panel-card-header">
+                            <h2>Backend Status</h2>
+                            <button class="topbar-btn" id="btn-health-check">Refresh</button>
+                        </div>
+                        <div class="settings-status-list">
+                            <div class="status-row"><span class="status-row-label">Gemini LLM</span><span class="status-row-value" id="setting-gemini">&#8212;</span></div>
+                            <div class="status-row"><span class="status-row-label">Hindsight Memory</span><span class="status-row-value" id="setting-hindsight">&#8212;</span></div>
+                            <div class="status-row"><span class="status-row-label">Bank ID</span><span class="status-row-value mono" id="setting-bankid">&#8212;</span></div>
+                            <div class="status-row"><span class="status-row-label">Active Model</span><span class="status-row-value mono" id="setting-model">&#8212;</span></div>
+                        </div>
+                    </div>
+                    <div class="panel-card settings-card">
+                        <div class="panel-card-header">
+                            <h2>Memory Management</h2>
+                        </div>
+                        <div class="settings-body">
+                            <p class="settings-desc">Reset the Hindsight memory bank and clear this session. This action cannot be undone.</p>
+                            <div class="settings-stat-row"><span>Incidents this session:</span><strong id="settings-session-count">0</strong></div>
+                            <div class="settings-stat-row"><span>Memories retained:</span><strong id="settings-retained-count">0</strong></div>
+                            <button class="danger-full-btn" id="btn-reset-settings">
+                                <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3 3v5h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                Reset Environment &amp; Memory Bank
+                            </button>
+                        </div>
+                    </div>
+                    <div class="panel-card settings-card">
+                        <div class="panel-card-header"><h2>ARIA Workflow</h2></div>
+                        <div class="workflow-diagram">
+                            <div class="wf-diagram-step"><div class="wf-d-icon">1</div><div class="wf-d-body"><strong>Detect</strong><span>Analyst submits incident</span></div></div>
+                            <div class="wf-diagram-connector"></div>
+                            <div class="wf-diagram-step"><div class="wf-d-icon recall-icon">2</div><div class="wf-d-body"><strong>Recall</strong><span>Hindsight queries memory bank</span></div></div>
+                            <div class="wf-diagram-connector"></div>
+                            <div class="wf-diagram-step"><div class="wf-d-icon">3</div><div class="wf-d-body"><strong>Analyze</strong><span>Gemini LLM reasons with context</span></div></div>
+                            <div class="wf-diagram-connector"></div>
+                            <div class="wf-diagram-step"><div class="wf-d-icon">4</div><div class="wf-d-body"><strong>Respond</strong><span>Structured recommendations returned</span></div></div>
+                            <div class="wf-diagram-connector"></div>
+                            <div class="wf-diagram-step"><div class="wf-d-icon retain-icon">5</div><div class="wf-d-body"><strong>Retain</strong><span>High-value findings stored to Hindsight</span></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="agent.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

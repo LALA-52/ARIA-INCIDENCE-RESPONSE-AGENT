@@ -1,0 +1,17 @@
+﻿{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/[...slug].js"
+    },
+    {
+      "src": "/(.*\\.(js|css|html|ico|png|svg))",
+      "dest": "/public/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.js"
+    }
+  ]
+}
