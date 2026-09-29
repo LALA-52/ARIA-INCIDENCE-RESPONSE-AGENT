@@ -24,8 +24,26 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Environment Variables
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const HINDSIGHT_API_KEY = process.env.HINDSIGHT_API_KEY;
+export const geminiKey = process.env.GEMINI_API_KEY;
+export const hindsightKey = process.env.HINDSIGHT_API_KEY;
 const HINDSIGHT_BASE_URL = process.env.HINDSIGHT_API_URL || 'https://api.hindsight.vectorize.io';
 const HINDSIGHT_BANK_ID = process.env.HINDSIGHT_BANK_ID || 'incident-response-agent';
+
+/**
+ * Direct Hindsight REST API fetch helper
+ */
+export async function fetchHindsightApi(endpoint, options = {}) {
+    const targetUrl = endpoint.startsWith('http') ? endpoint : `${HINDSIGHT_BASE_URL}${endpoint}`;
+    const response = await fetch(targetUrl, {
+        ...options,
+        headers: {
+            "Authorization": `Bearer ${process.env.HINDSIGHT_API_KEY}`,
+            "Content-Type": "application/json",
+            ...(options.headers || {})
+        }
+    });
+    return response;
+}
 
 if (!GEMINI_API_KEY) {
     console.error('WARNING: GEMINI_API_KEY is not defined in .env');
